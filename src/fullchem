@@ -1,0 +1,595 @@
+using Catalyst
+using Unitful
+
+export fullchem
+
+# Add unit "ppb" to Unitful 
+module MyUnits
+using Unitful
+@unit ppb "ppb" Number 1 / 1000000000 false
+end
+Unitful.register(MyUnits)
+
+
+function fullchem()
+    @variables A3O2(T)      = 0.22   #CH3CH2CH2OO; Primary RO2 from C3H8
+
+    @variables ACET(T)      = 0.846   #CH3C(O)CH3; Acetone
+
+    @variables ACTA(T)      = 0.138   #CH3C(O)OH; Acetic acid
+
+    @variables AERI(T)      = 0.713   #I; Dissolved iodine
+
+    @variables ALD2(T)      = 0.16   #CH3CHO; Acetaldehyde
+
+    @variables ALK4(T)      = 0.602   #>= C4 alkanes
+
+    @variables AONITA(T)    = 0.869   #Aerosol-phase organic nitrate from aromatic precursors
+
+    @variables AROMRO2(T)   = 0.876   #generic peroxy radical from aromatic oxidation
+
+    @variables AROMP4(T)    = 0.098   #Generic C4 product from aromatic oxidation
+
+    @variables AROMP5(T)    = 0.107   #Generic C5 product from aromatic oxidation
+
+    @variables ATO2(T)      = 0.768   #CH3C(O)CH2O2; RO2 from acetone
+
+    @variables ATOOH(T)     = 0.994   #CH3C(O)CH2OOH; ATO2 peroxide
+
+    @variables B3O2(T)      = 0.628   #CH3CH(OO)CH3; Secondary RO2 from C3H8
+
+    @variables BALD(T)      = 0.987   #benzaldehyde and tolualdehyde
+
+    @variables BENZ(T)      = 0.714   #C6H6; Benzene
+
+    @variables BENZO(T)     = 0.889   #C6H5O radical
+
+    @variables BENZO2(T)    = 0.879   #C6H5O2 radical
+
+    @variables BENZP(T)     = 0.01   #hydroperoxide from BENZO2
+
+    @variables Br(T)        = 0.396   #Br; Atomic bromine
+
+    @variables Br2(T)       = 0.638   #Br2; Molecular bromine
+
+    @variables BrCl(T)      = 0.368   #BrCl; Bromine chloride
+
+    @variables BrNO2(T)     = 0.311   #BrNO2; Nitryl bromide
+
+    @variables BrNO3(T)     = 0.684   #BrNO3; Bromine nitrate
+
+    @variables BrO(T)       = 0.945   #BrO; Bromine monoxide
+
+    @variables BRO2(T)      = 0.718   #C6H5O2 ; Peroxy radical from BENZ oxidation
+
+    @variables BrSALA(T)    = 0.319   #Br; Fine sea salt bromine
+
+    @variables BrSALC(T)    = 0.86   #Br; Course sea salt bromine
+
+    @variables BZCO3(T)     = 0.579   #benzoylperoxy radical
+
+    @variables BZCO3H(T)    = 0.829   #perbenzoic acid
+
+    @variables BZPAN(T)     = 0.491   #peroxybenzoyl nitrate
+
+    @variables C2H2(T)      = 0.51   #C2H2; Ethyne
+
+    @variables C2H4(T)      = 0.714   #Ethylene
+
+    @variables C2H6(T)      = 0.199   #C2H6; Ethane
+
+    @variables C3H8(T)      = 0.654   #C3H8; Propane
+
+    @variables C4HVP1(T)    = 0.481   #C4 hydroxy-vinyl-peroxy radicals from HPALDs
+
+    @variables C4HVP2(T)    = 0.829   #C4 hydroxy-vinyl-peroxy radicals from HPALDs
+
+    @variables CCl4(T)      = 0.55   #CCl4; Carbon tetrachloride
+
+    @variables CFC11(T)     = 0.361   #CCl3F ; CFC-11, R-11, Freon 11
+
+    @variables CFC12(T)     = 0.508   #CCl2F2; CFC-12, R-12, Freon 12
+
+    @variables CFC113(T)    = 0.588   #C2Cl3F3; CFC-113, Freon 113
+
+    @variables CFC114(T)    = 0.674   #C2Cl2F4; CFC-114, Freon 114
+
+    @variables CFC115(T)    = 0.84   #C2ClF5; CFC-115, Freon 115
+
+    @variables CH2Br2(T)    = 0.171   #CH3Br2; Dibromomethane
+
+    @variables CH2Cl2(T)    = 0.414   #CH2Cl2; Dichloromethane
+
+    @variables CH2I2(T)     = 0.32   #CH2I2; Diiodomethane
+
+    @variables CH2IBr(T)    = 0.334   #CH2IBr; Bromoiodomethane
+
+    @variables CH2ICl(T)    = 0.979   #CH2ICl; Chloroiodomethane
+
+    @variables CH2O(T)      = 0.714   #CH2O; Formaldehyde
+
+    @variables CH2OO(T)     = 0.516   #CH2OO; Criegee intermediate
+
+    @variables CH3Br(T)     = 0.131   #CH3Br; Methyl bromide
+
+    @variables CH3CCl3(T)   = 0.838   #CH3CCl3; Methyl chloroform
+
+    @variables CH3CHOO(T)   = 0.93   #CH3CHOO; Criegee intermediate
+
+    @variables CH3Cl(T)     = 0.937   #CH3Cl; Chloromethane
+
+    @variables CH3I(T)      = 0.293   #CH3I; Methyl iodide
+
+    @variables CH4(T)       = 0.218   #CH4; Methane
+
+    @variables CHBr3(T)     = 0.271   #CHBr3; Tribromethane
+
+    @variables CHCl3(T)     = 0.808   #CHCl3; Chloroform
+
+    @variables Cl(T)        = 0.954   #Cl; Atomic chlorine
+
+    @variables Cl2(T)       = 0.467   #Cl2; Molecular chlorine
+
+    @variables Cl2O2(T)     = 0.73   #Cl2O2; Dichlorine dioxide
+
+    @variables ClNO2(T)     = 0.323   #ClNO2; Nitryl chloride
+
+    @variables ClNO3(T)     = 0.526   #ClONO2; Chlorine nitrate
+
+    @variables ClO(T)       = 0.619   #ClO; Chlorine monoxide
+
+    @variables ClOO(T)      = 0.323   #ClOO; Chlorine dioxide
+
+    @variables CO(T)        = 0.224   #CO; Carbon monoxide
+
+    @variables CO2(T)       = 0.17   #CO2; Carbon dioxide
+
+    @variables CSL(T)       = 0.787   #cresols and xylols
+
+    @variables DMS(T)       = 0.072   #(CH3)2S; Dimethylsulfide
+
+    @variables EOH(T)       = 0.165   #C2H5OH; Ethanol
+
+    @variables ETHLN(T)     = 0.793   #CHOCH2ONO2; Ethanal nitrate
+
+    @variables ETHN(T)      = 0.446   #stable hydroxy-nitrooxy-ethane
+
+    @variables ETHP(T)      = 0.66   #stable hydroxy-hydroperoxy-ethane
+
+    @variables ETNO3(T)     = 0.086   #C2H5ONO2; Ethyl nitrate
+
+    @variables ETO(T)       = 0.924   #hydroxy-alkoxy-ethane radical
+
+    @variables ETOO(T)      = 0.185   #hydroxy-peroxy-ethane radical, formed from ethene + OH
+
+    @variables ETO2(T)      = 0.568   #CH3CH2OO; Ethylperoxy radical
+
+    @variables ETP(T)       = 0.893   #CH3CH2OOH; Ethylhydroperoxide
+
+    @variables GLYC(T)      = 0.32   #HOCH2CHO; Glycoaldehyde
+
+    @variables GLYX(T)      = 0.966   #CHOCHO; Glyoxal
+
+    @variables H(T)         = 0.321   #H; Atomic hydrogen
+
+    @variables H1211(T)     = 0.476   #CBrClF2; H-1211
+
+    @variables H1301(T)     = 0.741   #CBrF3; H-1301
+
+    @variables H2402(T)     = 0.789   #C2Br2F4; H-2402
+
+    @variables H2O(T)       = 0.289   #H2O; Water vapor
+
+    @variables H2O2(T)      = 0.308   #H2O2; Hydrogen peroxide
+
+    @variables HAC(T)       = 0.243   #HOCH2C(O)CH3; Hydroxyacetone
+
+    @variables HBr(T)       = 0.514   #HBr; Hypobromic acid
+
+    @variables HC5A(T)      = 0.58   #C5H8O2; Isoprene-4,1-hydroxyaldehyde
+
+    @variables HCFC123(T)   = 0.415   #C2HCl2F3; HCFC-123, R-123, Freon 123
+
+    @variables HCFC141b(T)  = 0.702   #C(CH3)Cl2F; HCFC-141b, R-141b, Freon 141b
+
+    @variables HCFC142b(T)  = 0.074   #C(CH3)ClF2; HCFC-142b, R-142b, Freon 142b
+
+    @variables HCFC22(T)    = 0.831   #CHClF2 ; HCFC-22, R-22, Freon 22
+
+    @variables HCl(T)       = 0.092   #HCl; Hydrochloric acid
+
+    @variables HCOOH(T)     = 0.654   #HCOOH; Formic acid
+
+    @variables HI(T)        = 0.232   #HI; Hydrogen iodide
+
+    @variables HMHP(T)      = 0.203   #HOCH2OOH; Hydroxymethyl hydroperoxide
+
+    @variables HMML(T)      = 0.346   #C4H6O3; Hydroxymethyl-methyl-a-lactone
+
+    @variables HMS(T)       = 0.272   #HOCH2SO3-; hydroxymethanesulfonate
+
+    @variables HNO2(T)      = 0.472   #HONO; Nitrous acid
+
+    @variables HNO3(T)      = 0.121   #HNO3; Nitric acid
+
+    @variables HNO4(T)      = 0.719   #HNO4; Pernitric acid
+
+    @variables HO2(T)       = 0.281   #HO2; Hydroperoxyl radical
+
+    @variables HOBr(T)      = 0.286   #HOBr; Hypobromous acid
+
+    @variables HOCl(T)      = 0.3   #HOCl; Hypochlorous acid
+
+    @variables HOI(T)       = 0.429   #HOI; Hypoiodous acid
+
+    @variables HONIT(T)     = 0.589   #2nd gen monoterpene organic nitrate
+
+    @variables HPALD1(T)    = 0.606   #O=CHC(CH3)=CHCH2OOH; d-4,1-C5-hydroperoxyaldehyde
+
+    @variables HPALD1OO(T)  = 0.947   #peroxy radicals from HPALD1
+
+    @variables HPALD2(T)    = 0.853   #HOOCH2C(CH3)=CHCH=O; d-1,4-C5-hydroperoxyaldehyde
+
+    @variables HPALD2OO(T)  = 0.104   #peroxy radicals from HPALD2
+
+    @variables HPALD3(T)    = 0.408   #O=CHC(CH3)OOHCH=CH2; b-2,1-C5-hydroperoxyaldehyde
+
+    @variables HPALD4(T)    = 0.121   #CH2=C(CH3)CHOOHCH=O; b-3,4-C5-hydroperoxyaldehyde
+
+    @variables HPETHNL(T)   = 0.918   #CHOCH2OOH; hydroperoxyethanal
+
+    @variables I(T)         = 0.384   #I; Atmoic iodine
+
+    @variables I2(T)        = 0.71   #I2; Molecular iodine
+
+    @variables I2O2(T)      = 0.028   #I2O2; Diiodine dioxide
+
+    @variables I2O3(T)      = 0.554   #I2O3; Diiodine trioxide
+
+    @variables I2O4(T)      = 0.236   #I2O4; Diiodine tetraoxide
+
+    @variables IBr(T)       = 0.311   #IBr; Iodine monobromide
+
+    @variables ICHE(T)      = 0.905   #C5H8O3; Isoprene hydroxy-carbonyl-epoxides
+
+    @variables ICHOO(T)     = 0.602   #peroxy radical from IEPOXD
+
+    @variables ICl(T)       = 0.621   #ICl; Iodine monochloride
+
+    @variables ICN(T)       = 0.984   #C5H7NO4; Lumped isoprene carbonyl nitrates
+
+    @variables ICNOO(T)     = 0.859   #peroxy radicals from ICN
+
+    @variables ICPDH(T)     = 0.068   #C5H10O5; Isoprene dihydroxy hydroperoxycarbonyl
+
+    @variables IDC(T)       = 0.666   #C5H6O2; Lumped isoprene dicarbonyls
+
+    @variables IDCHP(T)     = 0.855   #C5H8O5; Isoprene dicarbonyl hydroxy dihydroperoxide
+
+    @variables IDHDP(T)     = 0.791   #C5H12O6; Isoprene dihydroxy dihydroperoxide
+
+    @variables IDHNBOO(T)   = 0.551   #peroxy radicals from INPB
+
+    @variables IDHNDOO1(T)  = 0.379   #peroxy radicals from INPD
+
+    @variables IDHNDOO2(T)  = 0.534   #peroxy radicals from INPD
+
+    @variables IDHPE(T)     = 0.505   #C5H10O5; Isoprene dihydroxy hydroperoxy epoxide
+
+    @variables IDN(T)       = 0.93   #C5H8N2O6; Lumped isoprene dinitrates
+
+    @variables IDNOO(T)     = 0.58   #peroxy radicals from IDN
+
+    @variables IEPOXA(T)    = 0.758   #C5H10O3; trans-Beta isoprene epoxydiol
+
+    @variables IEPOXAOO(T)  = 0.404   #peroxy radical from trans-Beta isoprene epoxydiol
+
+    @variables IEPOXB(T)    = 0.165   #C5H10O3; cis-Beta isoprene epoxydiol
+
+    @variables IEPOXBOO(T)  = 0.371   #peroxy radical from cis-Beta isoprene epoxydiol
+
+    @variables IEPOXD(T)    = 0.507   #C5H10O3; Delta isoprene epoxydiol
+
+    @variables IHN1(T)      = 0.595   #C5H9NO4; Isoprene-d-4-hydroxy-1-nitrate
+
+    @variables IHN2(T)      = 0.64   #C5H9NO4; Isoprene-b-1-hydroxy-2-nitrate
+
+    @variables IHN3(T)      = 0.691   #C5H9NO4; Isoprene-b-4-hydroxy-3-nitrate
+
+    @variables IHN4(T)      = 0.111   #C5H9NO4; Isoprene-d-1-hydroxy-4-nitrate
+
+    @variables IHOO1(T)     = 0.761   #peroxy radical from OH addition to isoprene at C1
+
+    @variables IHOO4(T)     = 0.961   #peroxy radical from OH addition to isoprene at C4
+
+    @variables IHPNBOO(T)   = 0.483   #peroxy radicals from INPB
+
+    @variables IHPNDOO(T)   = 0.42   #peroxy radicals from INPD
+
+    @variables IHPOO1(T)    = 0.96   #peroxy radical from ISOPOOH
+
+    @variables IHPOO2(T)    = 0.776   #peroxy radical from ISOPOOH
+
+    @variables IHPOO3(T)    = 0.62   #peroxy radical from ISOPOOH
+
+    @variables INA(T)       = 0.693   #alkoxy radical from INO2D
+
+    @variables INDIOL(T)    = 0.58   #Generic aerosol phase organonitrate hydrolysis product
+
+    @variables INO(T)       = 0.326   #INO; Nitrosyl iodide
+
+    @variables INO2B(T)     = 0.665   #beta-peroxy radicals from isoprene + NO3
+
+    @variables INO2D(T)     = 0.938   #delta-peroxy radicals from isoprene + NO3
+
+    @variables INPB(T)      = 0.206   #C5H9NO5; Lumped isoprene beta-hydroperoxy nitrates
+
+    @variables INPD(T)      = 0.707   #C5H9NO5; Lumped isoprene delta-hydroperoxy nitrates
+
+    @variables IO(T)        = 0.881   #IO; Iodine monoxide
+
+    @variables IONITA(T)    = 0.587   #Aerosol-phase organic nitrate from isoprene precursors
+
+    @variables IONO(T)      = 0.071   #IONO; Nitryl iodide
+
+    @variables IONO2(T)     = 0.742   #IONO2; Iodine nitrate
+
+    @variables IPRNO3(T)    = 0.757   #C3H8ONO2; Isopropyl nitrate
+
+    @variables ISALA(T)     = 0.879   #I; Fine sea salt iodine
+
+    @variables ISALC(T)     = 0.935   #I; Coarse sea salt iodine
+
+    @variables ISOP(T)      = 0.187   #CH2=C(CH3)CH=CH2; Isoprene
+
+    @variables ISOPNOO1(T)  = 0.054   #peroxy radicals from IHN2
+
+    @variables ISOPNOO2(T)  = 0.717   #peroxy radicals from IHN3
+
+    @variables ITCN(T)      = 0.628   #C5H9NO7; Lumped tetrafunctional isoprene carbonyl-nitrates
+
+    @variables ITHN(T)      = 0.777   #C5H11NO7; Lumped tetrafunctional isoprene hydroxynitrates
+
+    @variables KO2(T)       = 0.04   #RO2 from >3 ketones
+
+    @variables LBRO2H(T)    = 0.188   #Dummy spc to track oxidation of BRO2 by HO2
+
+    @variables LBRO2N(T)    = 0.665   #Dummy spc to track oxidation of BRO2 by NO
+
+    @variables LIMO(T)      = 0.897   #C10H16; Limonene
+
+    @variables LIMO2(T)     = 0.019   #RO2 from LIMO
+
+    @variables LISOPOH(T)   = 0.739   #Dummy spc to track oxidation of ISOP by OH
+
+    @variables LISOPNO3(T)  = 0.581   #Dummy spc to track oxidation of ISOP by NO3
+
+    @variables LNRO2H(T)    = 0.514   #Dummy spc to track oxidation of NRO2 by HO2
+
+    @variables LNRO2N(T)    = 0.998   #Dummy spc to track oxidation of NRO2 by NO
+
+    @variables LTRO2H(T)    = 0.858   #Dummy spc to track oxidation of TRO2 by HO2
+
+    @variables LTRO2N(T)    = 0.653   #Dummy spc to track oxidation of TRO2 by NO
+
+    @variables LVOC(T)      = 0.876   #C5H14O5; Gas-phase low-volatility non-IEPOX product of ISOPOOH (RIP) oxidation
+
+    @variables LVOCOA(T)    = 0.831   #C5H14O5; Aerosol-phase low-volatility non-IEPOX product of ISOPOOH (RIP) oxidation
+
+    @variables LXRO2H(T)    = 0.82   #Dummy spc to track oxidation of XRO2 by HO2
+
+    @variables LXRO2N(T)    = 0.266   #Dummy spc to track oxidation of XRO2 by NO
+
+    @variables MACR(T)      = 0.935   #CH2=C(CH3)CHO; Methacrolein
+
+    @variables MACR1OO(T)   = 0.054   #peroxyacyl radical from MACR + OH
+
+    @variables MACR1OOH(T)  = 0.62   #CH2=C(CH3)C(O)OOH; Peracid from MACR
+
+    @variables MACRNO2(T)   = 0.774   #Product of MCRHN + OH
+
+    @variables MAP(T)       = 0.7   #CH3C(O)OOH; Peroxyacetic acid
+
+    @variables MCO3(T)      = 0.326   #CH3C(O)OO; Peroxyacetyl radical
+
+    @variables MCRDH(T)     = 0.69   #C4H8O3; Dihydroxy-MACR
+
+    @variables MCRENOL(T)   = 0.555   #C4H6O2; Lumped enols from MVK/MACR
+
+    @variables MCRHN(T)     = 0.809   #HOCH2C(ONO2)(CH3)CHO; Hydroxynitrate from MACR
+
+    @variables MCRHNB(T)    = 0.705   #O2NOCH2C(OH)(CH3)CHO; Hydroxynitrate from MACR
+
+    @variables MCRHP(T)     = 0.032   #HOCH2C(OOH)(CH3)CHO; Hydroxy-hydroperoxy-MACR
+
+    @variables MCROHOO(T)   = 0.338   #peroxy radical from MACR + OH
+
+    @variables MCT(T)       = 0.126   #methylcatechols
+
+    @variables MEK(T)       = 0.238   #RC(O)R; Methyl ethyl ketone
+
+    @variables MENO3(T)     = 0.669   #CH3ONO2; methyl nitrate
+
+    @variables MGLY(T)      = 0.128   #CH3COCHO; Methylglyoxal
+
+    @variables MO2(T)       = 0.195   #CH3O2; Methylperoxy radical
+
+    @variables MOH(T)       = 0.061   #CH3OH; Methanol
+
+    @variables MONITA(T)    = 0.265   #Aerosol-phase organic nitrate from monoterpene precursors
+
+    @variables MONITS(T)    = 0.304   #Saturated 1st gen monoterpene organic nitrate
+
+    @variables MONITU(T)    = 0.39   #Unsaturated 1st gen monoterpene organic nitrate
+
+    @variables MP(T)        = 0.226   #CH3OOH; Methylhydroperoxide
+
+    @variables MPAN(T)      = 0.137   #CH2=C(CH3)C(O)OONO2; Peroxymethacroyl nitrate (PMN)
+
+    @variables MPN(T)       = 0.481   #CH3O2NO2; Methyl peroxy nitrate
+
+    @variables MSA(T)       = 0.121   #CH4SO3; Methanesulfonic acid
+
+    @variables MTPA(T)      = 0.282   #Lumped monoterpenes: a-pinene, b-pinene, sabinene, carene
+
+    @variables MTPO(T)      = 0.051   #Other monoterpenes: Terpinene, terpinolene, myrcene, ocimene, other monoterpenes
+
+    @variables MVK(T)       = 0.189   #CH2=CHC(=O)CH3; Methyl vinyl ketone
+
+    @variables MVKDH(T)     = 0.367   #HOCH2CH2OHC(O)CH3; Dihydroxy-MVK
+
+    @variables MVKHC(T)     = 0.866   #C4H6O3; MVK hydroxy-carbonyl
+
+    @variables MVKHCB(T)    = 0.418   #C4H6O3; MVK hydroxy-carbonyl
+
+    @variables MVKHP(T)     = 0.803   #C4H8O4; MVK hydroxy-hydroperoxide
+
+    @variables MVKN(T)      = 0.57   #HOCH2CH(ONO2)C(=O)CH3; Hydroxynitrate from MVK
+
+    @variables MVKOHOO(T)   = 0.446   #peroxy radical from MVK + OH
+
+    @variables MVKPC(T)     = 0.685   #OCHCH(OOH)C(O)CH3; MVK hydroperoxy-carbonyl
+
+    @variables N(T)         = 0.154   #N; Atomic nitrogen
+
+    @variables N2O(T)       = 0.598   #N2O; Nitrous oxide
+
+    @variables N2O5(T)      = 0.711   #N2O5; Dinitrogen pentoxide
+
+    @variables NAP(T)       = 0.611   #C10H8; Naphthalene; IVOC surrogate
+
+    @variables NIT(T)       = 0.296   #NIT; Fine mode inorganic nitrate
+
+    @variables NITs(T)      = 0.364   #NITs; Coarse mode inorganic nitrate
+
+    @variables NO(T)        = 0.687   #NO; Nitric oxide
+
+    @variables NO2(T)       = 0.124   #NO2; Nitrogen dioxide
+
+    @variables NO3(T)       = 0.205   #NO3; Nitrate radical
+
+    @variables NPHEN(T)     = 0.589   #nitrophenols
+
+    @variables NPRNO3(T)    = 0.503   #C3H8ONO2; n-propyl nitrate
+
+    @variables NRO2(T)      = 0.198   #Peroxy radical from NAP oxidation
+
+    @variables O(T)         = 0.52   #O(3P); Ground state atomic oxygen
+
+    @variables O1D(T)       = 0.833   #O(1D); Excited atomic oxygen
+
+    @variables O3(T)        = 0.312   #O3; Ozone
+
+    @variables O3A(T)       = 0.473   #O3; Ozone in accum seasalt
+
+    @variables O3C(T)       = 0.391   #O3; Ozone in coarse seasalt
+
+    @variables OClO(T)      = 0.727   #OClO; Chlorine dioxide
+
+    @variables OCS(T)       = 0.842   #COS; Carbonyl sulfide
+
+    @variables OH(T)        = 0.439   #OH; Hydroxyl radical
+
+    @variables OIO(T)       = 0.889   #OIO; Iodine dioxide
+
+    @variables OLND(T)      = 0.266   #Monoterpene-derived NO3-alkene adduct
+
+    @variables OLNN(T)      = 0.027   #Monoterpene-derived NO3 adduct
+
+    @variables OTHRO2(T)    = 0.209   #Other C2 RO2 not from C2H6 oxidation
+
+    @variables PAN(T)       = 0.704   #CH3C(O)OONO2; Peroxyacetylnitrate
+
+    @variables PHEN(T)      = 0.494   #phenol
+
+    @variables PIO2(T)      = 0.559   #RO2 from MTPA
+
+    @variables PIP(T)       = 0.644   #Peroxides from MTPA
+
+    @variables PO2(T)       = 0.728   #HOCH2CH(OO)CH3; RO2 from propene
+
+    @variables PP(T)        = 0.697   #HOCH2CH(OOH)CH3; Peroxide from PO2
+
+    @variables PPN(T)       = 0.443   #CH3CH2C(O)OONO2; Peroxypropionylnitrate
+
+    @variables PRN1(T)      = 0.915   #O2NOCH2CH(OO)CH3; RO2 from propene + NO3
+
+    @variables PROPNN(T)    = 0.421   #CH3C(=O)CH2ONO2; Propanone nitrate
+
+    @variables PRPE(T)      = 0.219   #C3H6; >= C3 alkenes
+
+    @variables PRPN(T)      = 0.276   #O2NOCH2CH(OOH)CH3; Peroxide from PRN1
+
+    @variables PYAC(T)      = 0.54   #CH3COCOOH; Pyruvic acid
+
+    @variables R4N1(T)      = 0.632   #RO2 from R4N2
+
+    @variables R4N2(T)      = 0.89   #RO2NO; >= C4 alkylnitrates
+
+    @variables R4O2(T)      = 0.02   #RO2 from ALK4
+
+    @variables R4P(T)       = 0.118   #CH3CH2CH2CH2OOH; Peroxide from R4O2
+
+    @variables RA3P(T)      = 0.822   #CH3CH2CH2OOH; Peroxide from A3O2
+
+    @variables RB3P(T)      = 0.165   #CH3CH(OOH)CH3; Peroxide from B3O2
+
+    @variables RCHO(T)      = 0.315   #CH3CH2CHO; >= C3 aldehydes
+
+    @variables RCO3(T)      = 0.666   #CH3CH2C(O)OO; Peroxypropionyl radical
+
+    @variables RIPA(T)      = 0.633   #HOCH2C(OOH)(CH3)CH=CH2; 1,2-ISOPOOH
+
+    @variables RIPB(T)      = 0.152   #HOCH2C(OOH)(CH3)CH=CH2; 4,3-ISOPOOH
+
+    @variables RIPC(T)      = 0.431   #C5H10O3; d(1,4)-ISOPOOH
+
+    @variables RIPD(T)      = 0.823   #C5H10O3; d(4,1)-ISOPOOH
+
+    @variables ROH(T)       = 0.283   #C3H7OH; > C2 alcohols
+
+    @variables RP(T)        = 0.992   #CH3CH2C(O)OOH; Peroxide from RCO3
+
+    @variables SALAAL(T)    = 0.964   #Accumulation mode seasalt aerosol alkalinity
+
+    @variables SALCAL(T)    = 0.145   #Coarse mode seasalt aerosol alkalinity
+
+    @variables SALACL(T)    = 0.676   #Cl; Fine chloride
+
+    @variables SALCCL(T)    = 0.534   #Cl; Coarse chloride
+
+    @variables SALASO2(T)   = 0.971   #SO2; Fine seasalt
+
+    @variables SALCSO2(T)   = 0.027   #SO2; Coarse seasalt
+
+    @variables SALASO3(T)   = 0.832   #SO3--; Fine seasalt
+
+    @variables SALCSO3(T)   = 0.993   #SO3--; Coarse chloride
+
+    @variables SO2(T)       = 0.764   #SO2; Sulfur dioxide
+
+    @variables SO4(T)       = 0.098   #SO4; Sulfate
+
+    @variables SO4s(T)      = 0.062   #SO4 on sea-salt; Sulfate
+
+    @variables SOAGX(T)     = 0.649   #CHOCHO; Aerosol-phase glyoxal
+
+    @variables SOAIE(T)     = 0.59   #C5H10O3; Aerosol-phase IEPOX
+
+    @variables TOLU(T)      = 0.084   #C7H8; Toluene
+
+    @variables TRO2(T)      = 0.817   #Peroxy radical from TOLU oxidation
+
+    @variables XYLE(T)      = 0.436   #C8H10; Xylene
+
+    @variables XRO2(T)      = 0.544   #Peroxy radical from XYLE oxidation
+
+    @variables H2(T)        = 0.584   #H2; Molecular hydrogen
+
+    @variables N2(T)        = 0.041   #N2; Molecular nitrogen
+
+    @variables O2(T)        = 0.838   #O2; Molecular oxygen
+
+    @variables RCOOH(T)     = 0.523   #C2H5C(O)OH; > C2 organic acids 
+
+end
