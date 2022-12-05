@@ -793,6 +793,11 @@ end
 
 rs = fullchem()
 # , TRBDF2()
+@unpack O3, NO2, ISOP = rs
 a = solve(ODEProblem(rs, [], (0,1), [], combinatoric_ratelaws=false),Tsit5())
 plot(a)
+plt.show()
+plot(a.t, a[O3])
+plot!(a.t, a[NO2])
+plot!(a.t, a[ISOP])
 plt.show()
